@@ -1,7 +1,4 @@
-//const endpoints = require("./endpoints.json");
-
 const fs = require("fs");
-
 
 exports.getEndpoints = (req, res) => {
     fs.readFile("./endpoints.json", "utf8", (err, jsonString) => {
@@ -12,6 +9,5 @@ exports.getEndpoints = (req, res) => {
         const jsonObject = JSON.parse(jsonString);
         res.status(200).send({endpoints: jsonObject});
       });
-      
-      
   };
+
