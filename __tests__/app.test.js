@@ -42,3 +42,32 @@ describe('/api/topics', () => {
   })
 });
 
+describe('/api/articles/:article_id', () => {
+  test('GET:200 gets a single article by article_id when the ID exists', () => {
+    return request(app)
+      .get('/api/articles/2')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article_id).toBe(2);
+      });
+  });
+
+  test('GET:404 not found when article id is not in the list', () => {
+    return request(app)
+      .get('/api/articles/999')
+      .expect(404).then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Not found'); 
+      })
+  });
+
+  test('GET:400 bad request when article contains a string instead of id', () => {
+    return request(app)
+      .get('/api/articles/banana')
+      .expect(400).then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Bad request'); 
+      })
+  });
+});
+
