@@ -32,7 +32,6 @@ describe('/api/topics', () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.topics.length).toBe(3);
-    
          body.topics.forEach((topic) => {
          expect(typeof topic.description).toBe('string');
          expect(typeof topic.slug).toBe('string');
@@ -71,3 +70,19 @@ describe('/api/articles/:article_id', () => {
   });
 });
 
+describe('/api/articles', () => {
+  test('GET:200 gets all articles with specified columns', () => {
+    return request(app)
+      .get('/api/articles/')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(13);
+        expect(body.articles).toBeSortedBy('created_at');
+        body.articles.forEach((article) => {
+          expect(typeof article.author).toBe('string');
+          expect(typeof article.title).toBe('string');
+          expect(typeof article.comment_count).toBe('string');
+         });
+      });
+  });
+});
