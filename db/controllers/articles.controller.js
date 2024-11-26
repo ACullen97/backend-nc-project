@@ -4,9 +4,9 @@ const {
   } = require("../models/articles.model.js");
 
 exports.getArticleById = (req, res, next) => {
-    const  { id }  = req.params
+    const article_id = req.params.article_id
 
- return selectArticleById(id).then((result) =>{
+ selectArticleById(article_id).then((result) =>{
         res.status(200).send(result)
     }).catch((err)=>{
         console.log(err);
