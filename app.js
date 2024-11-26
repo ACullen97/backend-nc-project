@@ -6,12 +6,16 @@ const { getEndpoints } = require("./db/controllers/main.controller");
 
 const { getTopics } = require("./db/controllers/topics.controller");
 
+const { getArticleById } = require("./db/controllers/articles.controller");
+
 
 
 //middleware functions
 app.get("/api", getEndpoints);
 
 app.get("/api/topics", getTopics);
+
+app.get("/api/articles/:article_id", getArticleById);
 
 app.use((err, req, res, next) => {
     console.log(err, "error in middleware");
