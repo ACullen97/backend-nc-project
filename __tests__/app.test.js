@@ -215,6 +215,23 @@ describe('PATCH /api/articles/:article_id', () => {
   });
 });
 
+describe('PATCH /api/articles/:article_id', () => {
+  test('DELETE:204 removes comment by id', () => {
+    const newVote = {
+      inc_votes: 2
+    };
+    return request(app)
+      .patch('/api/articles/1').send(newVote)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.result.votes).toBe(102);
+      });
+  });
+
+
+
+});
+
 
 
 
