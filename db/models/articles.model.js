@@ -24,3 +24,17 @@ exports.selectArticles = () => {
     return result.rows;
   });
 };
+
+exports.selectCommentById = (article_id) => {
+    if (isNaN(article_id)) {
+        return Promise.reject({ status: 400, msg: "Bad request" });
+      }
+    let queryStr = `SELECT comment_id, votes, created_at, author, body, article_id FROM comments WHERE article_id = ${article_id}`;
+    return db.query(queryStr).then((result) => {
+        if (result.rows.length === 0) {
+            return Promise.reject({ status: 404, msg: "Not found" });
+          } else {
+            return result.rows;
+          }
+      });
+}

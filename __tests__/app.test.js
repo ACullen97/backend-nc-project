@@ -85,4 +85,40 @@ describe('/api/articles', () => {
          });
       });
   });
+})
+
+describe('/api/articles/:article_id/comments', () => {
+  test('GET:200 gets all comments with specified article id', () => {
+    return request(app)
+      .get('/api/articles/3/comments')
+      .expect(200)
+      .then(( { body } ) => {
+        expect(body.length).toBe(2);
+
+        body.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe('number');
+          expect(typeof comment.votes).toBe('number');
+          expect(typeof comment.author).toBe('string');
+         });
+      });
+  });
+
+  test('GET:404 not found when article id is not in the list', () => {
+    return request(app)
+      .get('/api/articles/999/comments')
+      .expect(404).then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Not found'); 
+      })
+  });
+
+  test('GET:400 bad request when article contains a string instead of id', () => {
+    return request(app)
+      .get('/api/articles/banana/comments')
+      .expect(400).then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Bad request'); 
+      })
+  });
 });
+
