@@ -6,7 +6,7 @@ const { getEndpoints } = require("./db/controllers/main.controller");
 
 const { getTopics } = require("./db/controllers/topics.controller");
 
-const { getArticleById, getArticles } = require("./db/controllers/articles.controller");
+const { getArticleById, getArticles, getArticleComments } = require("./db/controllers/articles.controller");
 
 
 
@@ -18,6 +18,9 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getArticleComments);
+
 
 //error handling
 
