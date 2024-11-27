@@ -6,9 +6,9 @@ const { getEndpoints } = require("./db/controllers/main.controller");
 
 const { getTopics } = require("./db/controllers/topics.controller");
 
-const { getArticleById, getArticles, getArticleComments } = require("./db/controllers/articles.controller");
+const { getArticleById, getArticles, getArticleComments, postArticleComment } = require("./db/controllers/articles.controller");
 
-
+app.use(express.json());
 
 //middleware functions
 app.get("/api", getEndpoints);
@@ -20,6 +20,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.post("/api/articles/:article_id/comments", postArticleComment);
 
 
 //error handling
@@ -36,6 +38,10 @@ app.use((err, req, res, next) => {
 
     else if(err.code == "42703"){
       res.status(404).send({msg: "does not exist"});
+    }
+
+    else if(err.code == "23503"){
+      res.status(404).send({msg: "Not found"});
     }
   
     else if (err.msg === 'team does not exist'){

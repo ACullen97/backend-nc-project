@@ -26,15 +26,42 @@ exports.selectArticles = () => {
 };
 
 exports.selectCommentById = (article_id) => {
-    if (isNaN(article_id)) {
-        return Promise.reject({ status: 400, msg: "Bad request" });
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+  let queryStr = `SELECT comment_id, votes, created_at, author, body, article_id FROM comments WHERE article_id = ${article_id}`;
+  return db.query(queryStr).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    } else {
+      return result.rows;
+    }
+  });
+};
+
+exports.addComment = ({ body, author }, article_id) => {
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
+  let queryStr = `SELECT * FROM users WHERE username = $1`;
+  let queryValue = [author];
+
+  return db
+    .query(queryStr, queryValue)
+    .then((response) => {
+      if (response.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not found" });
       }
-    let queryStr = `SELECT comment_id, votes, created_at, author, body, article_id FROM comments WHERE article_id = ${article_id}`;
-    return db.query(queryStr).then((result) => {
-        if (result.rows.length === 0) {
-            return Promise.reject({ status: 404, msg: "Not found" });
-          } else {
-            return result.rows;
-          }
-      });
-}
+    })
+    .then(() => {
+      return db
+        .query(
+          "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;",
+          [body, author, article_id]
+        )
+        .then((result) => {
+          return result.rows[0];
+        });
+    });
+};
