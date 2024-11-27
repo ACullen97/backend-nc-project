@@ -163,6 +163,58 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 
+describe('PATCH /api/articles/:article_id', () => {
+  test('PATCH:201 updates the vote count of a specified article', () => {
+    const newVote = {
+      inc_votes: 2
+    };
+    return request(app)
+      .patch('/api/articles/1').send(newVote)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.result.votes).toBe(102);
+      });
+  });
+
+  test('PATCH:201 updates the vote count of a specified article with a negative decrement', () => {
+    const newVote = {
+      inc_votes: -102
+    };
+    return request(app)
+      .patch('/api/articles/1').send(newVote)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.result.votes).toBe(-2);
+      });
+  });
+
+  test('POST:404 not found when article id does not exist', () => {
+    const newVote = {
+      inc_votes: 2
+    };
+    return request(app)
+      .patch('/api/articles/999').send(newVote)
+      .expect(404).then(( response ) => {
+        console.log(response.body, "response");
+        const { msg } = response.body;
+        expect(msg).toBe('Not found'); 
+      })
+  });
+
+  test('POST:400 bad reqest when article id is not a number', () => {
+    const newVote = {
+      inc_votes: 2
+    };
+    return request(app)
+      .patch('/api/articles/banana').send(newVote)
+      .expect(400).then(( response ) => {
+        console.log(response.body, "response");
+        const { msg } = response.body;
+        expect(msg).toBe('Bad request'); 
+      })
+  });
+});
+
 
 
 
