@@ -25,7 +25,7 @@ describe("GET /api", () => {
   });
 });
 
-describe('/api/topics', () => {
+describe('GET /api/topics', () => {
   test('GET:200 sends an array of topics to the client', () => {
     return request(app)
       .get('/api/topics')
@@ -41,7 +41,7 @@ describe('/api/topics', () => {
   })
 });
 
-describe('/api/articles/:article_id', () => {
+describe('GET /api/articles/:article_id', () => {
   test('GET:200 gets a single article by article_id when the ID exists', () => {
     return request(app)
       .get('/api/articles/2')
@@ -70,7 +70,7 @@ describe('/api/articles/:article_id', () => {
   });
 });
 
-describe('/api/articles', () => {
+describe('GET /api/articles', () => {
   test('GET:200 gets all articles with specified columns', () => {
     return request(app)
       .get('/api/articles/')
@@ -87,7 +87,7 @@ describe('/api/articles', () => {
   });
 })
 
-describe('/api/articles/:article_id/comments', () => {
+describe('GET /api/articles/:article_id/comments', () => {
   test('GET:200 gets all comments with specified article id', () => {
     return request(app)
       .get('/api/articles/3/comments')
@@ -121,4 +121,48 @@ describe('/api/articles/:article_id/comments', () => {
       })
   });
 });
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test('POST:201 adds a comment to the comments table where the user exists', () => {
+    const newComment = {
+      body: "Test Comment",
+      author: "icellusedkars",
+    };
+    return request(app)
+      .post('/api/articles/3/comments').send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.result.body).toBe("Test Comment");
+        expect(response.body.result.author).toBe("icellusedkars");
+        expect(response.body.result.article_id).toBe(3);
+      });
+  });
+  test('POST:404 adds a comment to the comments table when the user does not exist', () => {
+    const newComment = {
+      body: "Test Comment",
+      author: "acullen97",
+    };
+    return request(app)
+      .post('/api/articles/3/comments').send(newComment)
+      .expect(404).then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Not found'); 
+      })
+  });
+  test('POST:404 not found when article id does not exist', () => {
+    const newComment = {
+      body: "Test Comment",
+      author: "icellusedkars",
+    };
+    return request(app)
+      .post('/api/articles/999/comments').send(newComment)
+      .expect(404).then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Not found'); 
+      })
+  });
+});
+
+
+
 
