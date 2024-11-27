@@ -6,7 +6,7 @@ const { getEndpoints } = require("./db/controllers/main.controller");
 
 const { getTopics } = require("./db/controllers/topics.controller");
 
-const { getArticleById, getArticles, getArticleComments, postArticleComment } = require("./db/controllers/articles.controller");
+const { getArticleById, getArticles, getArticleComments, postArticleComment, patchArticle } = require("./db/controllers/articles.controller");
 
 app.use(express.json());
 
@@ -22,6 +22,9 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.post("/api/articles/:article_id/comments", postArticleComment);
+
+app.patch("/api/articles/:article_id", patchArticle);
+
 
 
 //error handling
