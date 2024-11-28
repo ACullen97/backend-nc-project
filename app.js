@@ -10,6 +10,8 @@ const { getArticleById, getArticles, getArticleComments, postArticleComment, pat
 
 const { deleteComment } = require("./db/controllers/comments.controller");
 
+const { getUsers } = require("./db/controllers/users.controller");
+
 app.use(express.json());
 
 //middleware functions
@@ -20,6 +22,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/users", getUsers);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
