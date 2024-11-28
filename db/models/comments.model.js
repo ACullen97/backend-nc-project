@@ -2,21 +2,17 @@ const { promises } = require("supertest/lib/test.js");
 const db = require("../connection.js");
 
 exports.removeComment = (comment_id) => {
-    console.log(comment_id);
-    let queryStr = `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`;
-    let queryValue = [comment_id];
-  
-    return db.query(queryStr, queryValue)
-    .then((response) => {
-  
-      console.log(response.rows[0], "response.rows");
-    
-      if (response.rows.length === 0) {
+  return db
+    .query("SELECT * FROM comments WHERE comment_id = $1;", [comment_id])
+    .then((result) => {
+      if (result.rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Not found" });
+      } else if (isNaN(comment_id)) {
+        return Promise.reject({ status: 400, msg: "Bad request" });
       } else {
-        
-        return response.rows[0];
+        return db.query("DELETE FROM comments WHERE comment_id = $1;", [
+          comment_id,
+        ]);
       }
     });
-  };
-  
+};

@@ -67,19 +67,15 @@ exports.addComment = ({ body, author }, article_id) => {
 };
 
 exports.updateArticle = (votes, article_id) => {
-  console.log(votes, article_id);
   let queryStr = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`;
   let queryValue = [votes, article_id];
 
   return db.query(queryStr, queryValue)
   .then((response) => {
-
-    console.log(response.rows[0], "response.rows");
   
     if (response.rows.length === 0) {
       return Promise.reject({ status: 404, msg: "Not found" });
     } else {
-      
       return response.rows[0];
     }
   });
