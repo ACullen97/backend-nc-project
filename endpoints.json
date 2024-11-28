@@ -94,5 +94,18 @@
         }
       ]
     }
+  },
+  "GET /api/comments": {
+    "description": "serves an array of all comments",
+    "queries": ["username", "name", "avatar_url"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "username": "rogersop",
+          "name": "paul",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+        }
+      ]
+    }
   }
 }
