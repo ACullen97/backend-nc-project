@@ -235,12 +235,7 @@ describe("DELETE /api/comments/:comment_id", () => {
   test("DELETE:204 removes comment by id", () => {
     return request(app)
       .delete("/api/comments/1")
-      .expect(204)
-      .then((response) => {
-        // why is my response body an empty object?
-        console.log(response.body, "response");
-        // expect(response.body.comment_id).toBe(1);
-      });
+      .expect(204);
   });
 
   test("DELETE:404 cannot delete comment that doesn't have a valid ID", () => {
@@ -248,7 +243,6 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/999")
       .expect(404)
       .then((response) => {
-        console.log(response.body, "response");
         const { msg } = response.body;
         expect(msg).toBe("Not found");
       });
@@ -269,4 +263,46 @@ describe("GET /api/users", () => {
         });
       });
   });
+});
+
+describe('/api/articles/query', () => {
+  test('GET:200 sends a query sorted by column name', () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic&order=DESC')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(13);
+        expect(body.articles).toBeSortedBy("topic", {descending: true});
+      });
+  })
+
+  test('GET:404 not found when sort by does not exist', () => {
+    return request(app)
+      .get('/api/articles?sort_by=banana&order=DESC')
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Not found");
+      });
+  })
+
+  test('GET:200 in ascending order when order is not given', () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(13);
+        expect(body.articles).toBeSortedBy("topic", {ascending: true});
+      });
+  })
+
+  test('GET:200 in descending order when topic is not given', () => {
+    return request(app)
+      .get('/api/articles?order=DESC')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(13);
+        expect(body.articles).toBeSortedBy("created_at", {descending: true});
+      });
+  })
 });
