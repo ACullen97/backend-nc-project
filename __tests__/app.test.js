@@ -306,3 +306,35 @@ describe('/api/articles/query', () => {
       });
   })
 });
+
+describe('/api/articles/query', () => {
+  test.only('GET:200 sends a query sorted by column name', () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic&order=DESC&topic=cats')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(1);
+        expect(body.articles).toBeSortedBy("topic", {descending: true});
+      });
+  })
+
+  test.only('GET:200 sends a query sorted by topic', () => {
+    return request(app)
+      .get('/api/articles?topic=cats')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(1);
+        expect(body.articles).toBeSortedBy("topic", {descending: true});
+      });
+  })
+
+  test.only('GET:404 topic does not exist', () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic&order=DESC&topic=paper')
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Not found");
+      });
+  })
+});

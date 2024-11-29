@@ -18,9 +18,19 @@ exports.selectArticleById = (articleId) => {
   });
 };
 
-exports.selectArticles = (sort_by, order) => {
-  console.log(sort_by, order);
-  let queryStr = `SELECT articles.*, COALESCE(COUNT(comments.comment_id),0) AS comment_count FROM articles LEFT JOIN comments ON comments.author = articles.author GROUP BY articles.article_id`;
+exports.selectArticles = (sort_by, order, topic) => {
+  console.log(sort_by, order, topic);
+  let queryStr = `SELECT articles.*, COALESCE(COUNT(comments.comment_id),0) AS comment_count FROM articles LEFT JOIN comments ON comments.author = articles.author `;
+  
+
+  if(topic){
+    queryStr += `WHERE topic='${topic}' GROUP BY articles.article_id`
+  }
+
+  else {
+     queryStr += `GROUP BY articles.article_id`
+  }
+
   if (sort_by && order){
     queryStr += ` ORDER BY ${sort_by} ${order}`;
   }
@@ -35,7 +45,12 @@ exports.selectArticles = (sort_by, order) => {
   }
   console.log(queryStr);
   return db.query(queryStr).then((result) => {
-    return result.rows;
+
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    } else {
+      return result.rows;
+    }
   })
   };
 
@@ -48,7 +63,7 @@ exports.selectCommentById = (article_id) => {
     return Promise.reject({ status: 400, msg: "Bad request" });
   }
   let queryStr = `SELECT comment_id, votes, created_at, author, body, article_id FROM comments WHERE article_id = ${article_id}`;
-  return db.query(queryStr).then((result) => {
+  return db.query(queryStr, queryValue).then((result) => {
     if (result.rows.length === 0) {
       return Promise.reject({ status: 404, msg: "Not found" });
     } else {
