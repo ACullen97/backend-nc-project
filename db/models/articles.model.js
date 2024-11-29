@@ -18,12 +18,30 @@ exports.selectArticleById = (articleId) => {
   });
 };
 
-exports.selectArticles = () => {
-  let queryStr = `SELECT articles.*, COALESCE(COUNT(comments.comment_id),0) AS comment_count FROM articles LEFT JOIN comments ON comments.author = articles.author GROUP BY articles.article_id ORDER BY created_at ASC`;
+exports.selectArticles = (sort_by, order) => {
+  console.log(sort_by, order);
+  let queryStr = `SELECT articles.*, COALESCE(COUNT(comments.comment_id),0) AS comment_count FROM articles LEFT JOIN comments ON comments.author = articles.author GROUP BY articles.article_id`;
+  if (sort_by && order){
+    queryStr += ` ORDER BY ${sort_by} ${order}`;
+  }
+  else if(sort_by && !order){
+    queryStr += ` ORDER BY ${sort_by} ASC`;
+  }
+  else if(!sort_by && order){
+    queryStr += ` ORDER BY created_at ${order}`;
+  }
+  else{
+    queryStr += ` ORDER BY created_at ASC`;
+  }
+  console.log(queryStr);
   return db.query(queryStr).then((result) => {
     return result.rows;
-  });
-};
+  })
+  };
+
+
+
+
 
 exports.selectCommentById = (article_id) => {
   if (isNaN(article_id)) {

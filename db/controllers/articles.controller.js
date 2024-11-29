@@ -20,9 +20,11 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  selectArticles()
+
+  const sort_by = req.query.sort_by;
+  const order = req.query.order;
+  selectArticles(sort_by, order)
     .then((articles) => {
-      console.log({ articles });
       res.status(200).send({ articles });
     })
     .catch((err) => {
