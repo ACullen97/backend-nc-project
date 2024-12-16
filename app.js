@@ -1,6 +1,9 @@
 const express = require("express");
 
+const cors = require('cors');
+
 const app = express();
+
 
 const { getEndpoints } = require("./db/controllers/main.controller");
 
@@ -19,7 +22,7 @@ const { deleteComment } = require("./db/controllers/comments.controller");
 const { getUsers } = require("./db/controllers/users.controller");
 
 app.use(express.json());
-
+app.use(cors());
 //middleware functions
 app.get("/api", getEndpoints);
 
