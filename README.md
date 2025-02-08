@@ -1,17 +1,11 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
-
-GITHUB REPO
-https://github.com/ACullen97/backend-nc-project/
-
 This project is an API that stores data for news articles using JavaScript and Express, hosted with Supabase and Render.
 
-URL
+### URL
 https://backend-nc-project-w9aw.onrender.com
 
-Endpoints
-
+### Endpoints
 Get all articles: /api/articles
 Get topics: /api/topics
 Get article by id: /api/articles/:article_id
